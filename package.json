@@ -1,0 +1,9 @@
+{
+  "name": "pharmatrack-license-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "razorpay": "^2.9.4"
+  }
+}
