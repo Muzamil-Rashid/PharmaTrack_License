@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { supabase } = require('../../lib/supabase');
 const { PLANS } = require('../../lib/plans');
 const { generateLicenseKey } = require('../../lib/license');
+const { sendLicenseNotificationEmails } = require('../../lib/mailer');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
@@ -32,7 +33,8 @@ module.exports = async (req, res) => {
     }
 
     if (order.status === 'license_issued') {
-      // Already handled — most likely the webhook got there first. Return the same key.
+      // Already handled — most likely the webhook got there first (and
+      // already sent the notification emails then). Just return the same key.
       return res.status(200).json({ success: true, licenseKey: order.license_key, expiresAt: order.expires_at });
     }
 
@@ -53,6 +55,18 @@ module.exports = async (req, res) => {
       .eq('razorpay_order_id', razorpay_order_id);
 
     if (updateError) throw updateError;
+
+    try {
+      await sendLicenseNotificationEmails({
+        customer: { fullName: order.full_name, email: order.email, mobile: order.mobile },
+        planName: plan.name,
+        licenseKey,
+        expiresAt,
+        requestCode: order.request_code,
+      });
+    } catch (emailErr) {
+      console.error('Notification emails failed (license was still issued):', emailErr);
+    }
 
     res.status(200).json({ success: true, licenseKey, expiresAt });
   } catch (err) {
