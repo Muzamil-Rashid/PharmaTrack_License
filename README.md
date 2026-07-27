@@ -42,6 +42,8 @@ in Step 3, nowhere else.
    - `RAZORPAY_WEBHOOK_SECRET` (see Step 4 — you can add this after the
      first deploy too, then redeploy)
    - `LICENSE_PRIVATE_KEY_B64`
+   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `ADMIN_NOTIFICATION_EMAIL`,
+     `SUPPORT_EMAIL` (see Step 4.5 below)
 4. Click **Deploy**. Vercel gives you a URL like
    `https://your-project.vercel.app` — that's your whole site, activation
    page and API together.
@@ -55,13 +57,37 @@ in Step 3, nowhere else.
    `RAZORPAY_WEBHOOK_SECRET` env variable, then redeploy (Vercel →
    Deployments → ⋯ → Redeploy) so the new variable takes effect.
 
+## Step 4.5 — Email notifications (one-time)
+
+Whenever a license is issued (trial or paid), two emails go out
+automatically: one to the customer with their license key, and one to
+you with the order details. This uses Gmail SMTP, not a separate email
+service:
+
+1. On the Gmail account you want to send FROM, turn on 2-Step
+   Verification: <https://myaccount.google.com/security>
+2. Create an App Password: <https://myaccount.google.com/apppasswords>
+   (app type: "Mail"). It gives you a 16-character code.
+3. In Vercel's Environment Variables, set:
+   - `GMAIL_USER` — that Gmail address
+   - `GMAIL_APP_PASSWORD` — the 16-character code (no spaces)
+   - `ADMIN_NOTIFICATION_EMAIL` — where you want the internal copy sent
+   - `SUPPORT_EMAIL` — shown in the customer's email as the "need help" contact
+4. Redeploy.
+
+If these variables aren't set, the site still works exactly as before —
+license issuance just skips sending emails and logs a warning, it never
+blocks a customer from getting their key.
+
 ## Step 5 — Test before going live
 
 1. Open `https://your-project.vercel.app/?request_code=test123` in a
    browser (any request code works for testing).
 2. Try the **Free Trial** button — you should land on the success screen
    with a license key, and see a new row appear in Supabase's Table Editor
-   under `orders`.
+   under `orders`. If email is configured, check that both the customer
+   inbox (use a real email address of your own for this test) and
+   `ADMIN_NOTIFICATION_EMAIL` received their messages.
 3. Try a paid plan with Razorpay's test mode (use test API keys first,
    switch to live keys only once this works end-to-end).
 4. **Important:** take one generated license key and confirm it actually
