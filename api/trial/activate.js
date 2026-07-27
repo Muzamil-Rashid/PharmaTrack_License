@@ -1,6 +1,7 @@
 const { supabase } = require('../../lib/supabase');
 const { generateLicenseKey } = require('../../lib/license');
 const { TRIAL_DURATION_DAYS } = require('../../lib/plans');
+const { sendLicenseNotificationEmails } = require('../../lib/mailer');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
@@ -39,6 +40,21 @@ module.exports = async (req, res) => {
       expires_at: expiresAt,
     });
     if (orderError) throw orderError;
+
+    // Email failures must never block the license response -- the
+    // license is already saved by this point, so notification is
+    // best-effort on top of that.
+    try {
+      await sendLicenseNotificationEmails({
+        customer: { fullName: customer?.fullName, email: customer?.email, mobile: customer?.mobile },
+        planName: 'Free Trial',
+        licenseKey,
+        expiresAt,
+        requestCode,
+      });
+    } catch (emailErr) {
+      console.error('Notification emails failed (license was still issued):', emailErr);
+    }
 
     res.status(200).json({ success: true, licenseKey, expiresAt });
   } catch (err) {
