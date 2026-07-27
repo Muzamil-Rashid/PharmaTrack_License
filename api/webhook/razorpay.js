@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { supabase } = require('../../lib/supabase');
 const { PLANS } = require('../../lib/plans');
 const { generateLicenseKey } = require('../../lib/license');
+const { sendLicenseNotificationEmails } = require('../../lib/mailer');
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -50,7 +51,18 @@ async function handler(req, res) {
             updated_at: new Date().toISOString(),
           })
           .eq('razorpay_order_id', payment.order_id);
-        // Optional next step: email the key here too, as a backstop.
+
+        try {
+          await sendLicenseNotificationEmails({
+            customer: { fullName: order.full_name, email: order.email, mobile: order.mobile },
+            planName: plan.name,
+            licenseKey,
+            expiresAt,
+            requestCode: order.request_code,
+          });
+        } catch (emailErr) {
+          console.error('Notification emails failed (license was still issued):', emailErr);
+        }
       }
     }
 
