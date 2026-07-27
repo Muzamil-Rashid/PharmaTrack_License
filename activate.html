@@ -623,7 +623,7 @@
   <div id="noCodeBlock" class="warning-banner" hidden style="font-size:14px; padding:16px 18px;">
     ⚠️ <span>We couldn't detect a request code from PharmaTrack. Please close this page and reopen it using the
     <strong>"Get License"</strong> button inside the software — this page only works when opened that way.
-    Still stuck? Contact <a href="mailto:MuzamilMatta63@gmail.com">MuzamilMatta63@gmail.com</a>.</span>
+    Still stuck? Contact <a id="supportEmailLink1" href="#">MuzamilMatta63@gmail.com</a>.</span>
   </div>
 
   <div id="flowContainer" hidden>
@@ -799,7 +799,7 @@
 
   <footer>
     <a href="/">← Back to PharmaTrack home</a>
-    &nbsp;·&nbsp; Need help? Contact <a href="mailto:MuzamilMatta63@gmail.com">MuzamilMatta63@gmail.com</a>
+    &nbsp;·&nbsp; Need help? Contact <a id="supportEmailLink2" href="#">MuzamilMatta63@gmail.com</a>
     &nbsp;·&nbsp; © 2026 ePine Business Solutions. All rights reserved.
   </footer>
 
@@ -1194,6 +1194,16 @@
     document.getElementById('formSection').hidden = true;
     document.getElementById('successSection').hidden = true;
     document.getElementById('plansSection').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+  // ==========================================================
+  // SUPPORT CONTACT — edit this one line only; both mentions of the
+  // support email on this page are filled in from here.
+  // ==========================================================
+  const SUPPORT_EMAIL = 'MuzamilMatta63@gmail.com';
+  ['supportEmailLink1', 'supportEmailLink2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el){ el.href = 'mailto:' + SUPPORT_EMAIL; el.textContent = SUPPORT_EMAIL; }
   });
 
   initRequestCode();

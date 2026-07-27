@@ -198,7 +198,7 @@
 
   <section class="term" id="s14">
     <h2><span class="num">14</span> Contact</h2>
-    <p>Questions about these Terms, installation, or licensing? Reach us at <a href="mailto:MuzamilMatta63@gmail.com">MuzamilMatta63@gmail.com</a> or WhatsApp <a href="https://wa.me/919103109249" target="_blank" rel="noopener">9103109249</a>.</p>
+    <p>Questions about these Terms, installation, or licensing? Reach us at <a id="supportEmailLink" href="#">MuzamilMatta63@gmail.com</a> or WhatsApp <a id="supportWhatsappLink" href="#" target="_blank" rel="noopener">9103109249</a>.</p>
   </section>
 
   <footer>
@@ -206,5 +206,22 @@
   </footer>
 
 </div>
+
+<script>
+  // ==========================================================
+  // SUPPORT CONTACT — edit these two lines only.
+  // ==========================================================
+  const SUPPORT_EMAIL = 'MuzamilMatta63@gmail.com';
+  const SUPPORT_WHATSAPP = '919103109249';
+
+  const emailLink = document.getElementById('supportEmailLink');
+  emailLink.href = 'mailto:' + SUPPORT_EMAIL;
+  emailLink.textContent = SUPPORT_EMAIL;
+
+  const waLink = document.getElementById('supportWhatsappLink');
+  waLink.href = 'https://wa.me/' + SUPPORT_WHATSAPP;
+  waLink.textContent = SUPPORT_WHATSAPP.replace(/^91/, '');
+</script>
+
 </body>
 </html>

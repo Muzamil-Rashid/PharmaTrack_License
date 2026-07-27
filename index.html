@@ -52,10 +52,12 @@
     background: rgba(242,246,243,0.88);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
+    transition: box-shadow .2s ease;
   }
+  .site-nav.scrolled{ box-shadow: 0 2px 16px rgba(16,35,31,0.06); }
   .nav-inner{
     max-width: 1120px; margin:0 auto; padding: 14px 24px;
-    display:flex; align-items:center; justify-content:space-between; gap: 16px;
+    display:flex; align-items:center; gap: 36px;
   }
   .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
   .brand-logo{ width:36px; height:36px; border-radius:9px; object-fit:cover; box-shadow:var(--shadow); flex-shrink:0; }
@@ -64,10 +66,13 @@
   .nav-links a{ text-decoration:none; color: var(--ink-muted); transition: color .15s ease; }
   .nav-links a:hover{ color: var(--primary-dark); }
   .nav-cta{
+    margin-left: auto;
     background: var(--primary); color:var(--white); text-decoration:none;
     padding: 9px 18px; border-radius: 9px; font-weight:600; font-size:13.5px;
     white-space: nowrap;
+    transition: background .15s ease, transform .15s ease;
   }
+  .nav-cta:hover{ background: var(--primary-dark); transform: translateY(-1px); }
   @media (max-width: 720px){
     .nav-links a.nav-link-hide{ display:none; }
   }
@@ -87,9 +92,21 @@
   /* ---------- Hero ---------- */
   .hero{
     max-width: 1120px; margin: 0 auto;
-    padding: 64px 24px 88px;
-    display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items:center;
+    padding: 68px 24px 92px;
+    display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items:center;
+    position: relative;
   }
+  .hero-eyebrow, .hero-title, .hero-sub, .hero-ctas, .trust-row{
+    opacity: 0; transform: translateY(16px);
+    animation: heroTextIn .65s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .hero-eyebrow{ animation-delay: .05s; }
+  .hero-title{ animation-delay: .18s; }
+  .hero-sub{ animation-delay: .34s; }
+  .hero-ctas{ animation-delay: .50s; }
+  .trust-row{ animation-delay: .64s; }
+  @keyframes heroTextIn{ to{ opacity:1; transform:translateY(0); } }
+
   .hero-eyebrow{
     display:inline-block;
     font-size: 12.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
@@ -103,41 +120,76 @@
   }
   .hero-sub{ font-size: 16.5px; color: var(--ink-muted); max-width: 480px; margin-top: 20px; }
   .hero-ctas{ display:flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .btn-primary .arrow, .btn-outline .arrow{ display:inline-block; transition: transform .18s ease; }
+  .btn-primary:hover .arrow, .btn-outline:hover .arrow{ transform: translateX(3px); }
   .trust-row{ display:flex; gap: 22px; margin-top: 30px; flex-wrap: wrap; }
   .trust-item{ display:flex; align-items:center; gap:7px; font-size: 13px; color: var(--ink-muted); font-weight:600; }
   .trust-item .dot{ width:6px; height:6px; border-radius:50%; background: var(--primary); flex-shrink:0; }
 
-  /* ---------- Hero illustration: shelf-tag stack (signature element) ---------- */
-  .hero-stack{ position: relative; height: 340px; }
-  .shelf-tag{
-    position: absolute;
+  /* ---------- Hero illustration: software-window mockup (signature element) ----------
+     Shows the real feature list as sidebar items, cascading in on load — this
+     replaces an earlier version that used invented stat numbers; every label
+     here is a real PharmaTrack capability. */
+  .hero-visual{ position: relative; }
+  .hero-visual::before{
+    content:"";
+    position:absolute; top:-50px; right:-50px; width:300px; height:300px;
+    background: radial-gradient(circle, rgba(14,124,102,0.14), transparent 70%);
+    z-index:0; pointer-events:none;
+  }
+  .mock-window{
+    position:relative; z-index:1;
     background: var(--white);
     border: 1.5px solid var(--border);
-    border-radius: 13px;
-    padding: 16px 18px;
-    width: 226px;
+    border-radius: 16px;
     box-shadow: var(--shadow-lg);
-    opacity: 0;
-    animation: tagIn .65s ease forwards;
+    overflow:hidden;
+    opacity:0; transform: translateY(10px) scale(0.98);
+    animation: heroTextIn .7s cubic-bezier(.2,.7,.2,1) forwards;
+    animation-delay: .2s;
   }
-  .shelf-tag::before{
-    content:"";
-    position:absolute; top:-9px; left:50%; transform: translateX(-50%);
-    width:18px; height:18px; border-radius:50%;
-    background: var(--paper); border: 1.5px solid var(--border);
+  .mock-titlebar{
+    display:flex; align-items:center; gap:7px;
+    padding: 12px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
   }
-  .tag-label{ font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color: var(--ink-muted); }
-  .tag-value{ font-family:'IBM Plex Mono',monospace; font-size:18px; font-weight:600; color: var(--primary-dark); margin-top:5px; }
-  .tag-sub{ font-size: 12px; color: var(--ink-muted); margin-top: 3px; }
-  .tag-1{ top: 0px;   left: 30px;  animation-delay: .15s; z-index:1; }
-  .tag-2{ top: 108px; left: 132px; animation-delay: .40s; z-index:2; }
-  .tag-3{ top: 224px; left: 6px;   animation-delay: .65s; z-index:1; }
-  .tag-2 .tag-value{ color: var(--danger); }
-  @keyframes tagIn{ from{ opacity:0; transform: translateY(16px); } to{ opacity:1; transform: translateY(0); } }
+  .mock-dot{ width:9px; height:9px; border-radius:50%; }
+  .mock-window-title{ margin-left:8px; font-size:12px; color:var(--ink-muted); font-weight:600; }
+  .mock-body{ display:flex; min-height: 316px; }
+  .mock-sidebar{
+    width: 176px; flex-shrink:0;
+    border-right: 1px solid var(--border);
+    padding: 12px 8px;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .mock-item{
+    display:flex; align-items:center; gap:9px;
+    font-size: 12.5px; font-weight:600; color: var(--ink);
+    padding: 9px 10px; border-radius:8px;
+    opacity:0; transform:translateX(-8px);
+    animation: mockItemIn .5s ease forwards;
+  }
+  .mock-item svg{ width:15px; height:15px; color: var(--primary); flex-shrink:0; }
+  .mock-item.active{ background: var(--success-bg); color: var(--primary-dark); }
+  .mock-item:nth-child(1){ animation-delay: .55s; }
+  .mock-item:nth-child(2){ animation-delay: .64s; }
+  .mock-item:nth-child(3){ animation-delay: .73s; }
+  .mock-item:nth-child(4){ animation-delay: .82s; }
+  .mock-item:nth-child(5){ animation-delay: .91s; }
+  .mock-item:nth-child(6){ animation-delay: 1.00s; }
+  .mock-item:nth-child(7){ animation-delay: 1.09s; }
+  @keyframes mockItemIn{ to{ opacity:1; transform:translateX(0); } }
+  .mock-content{ flex:1; padding: 26px 24px; display:flex; flex-direction:column; gap:14px; justify-content:center; }
+  .mock-content-bar{ height:11px; border-radius:6px; background: var(--paper); border:1px solid var(--border); }
 
   @media (max-width: 880px){
     .hero{ grid-template-columns: 1fr; }
-    .hero-stack{ height: 300px; margin-top: 8px; }
+  }
+  @media (max-width: 480px){
+    .mock-sidebar{ width: 132px; }
+    .mock-item{ font-size: 11.5px; padding: 8px 7px; }
+    .mock-body{ min-height: 280px; }
   }
 
   /* ---------- Section scaffolding ---------- */
@@ -173,7 +225,13 @@
     background: var(--cream); border: 1.5px solid var(--border);
   }
   .feature-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
-  .feature-icon{ width:38px; height:38px; color: var(--primary); margin-bottom: 16px; }
+  .feature-icon-wrap{
+    width: 46px; height:46px; border-radius: 12px;
+    background: var(--success-bg);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom: 16px;
+  }
+  .feature-icon{ width:22px; height:22px; color: var(--primary); }
   .feature-title{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16.5px; margin-bottom:8px; }
   .feature-desc{ font-size: 13.8px; color: var(--ink-muted); line-height:1.55; }
 
@@ -226,7 +284,7 @@
 
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
-    .shelf-tag{ opacity:1; transform:none; }
+    .hero-eyebrow, .hero-title, .hero-sub, .hero-ctas, .trust-row, .mock-window, .mock-item{ opacity:1; transform:none; }
     .reveal{ opacity:1; transform:none; }
   }
 </style>
@@ -244,8 +302,8 @@
         <a href="#features" class="nav-link-hide">Features</a>
         <a href="#download" class="nav-link-hide">Download</a>
         <a href="#support" class="nav-link-hide">Support</a>
-        <a href="/activate.html" class="nav-cta">Generate License</a>
       </div>
+      <a href="/activate.html" class="nav-cta">Generate License</a>
     </div>
   </nav>
 
@@ -253,11 +311,11 @@
   <header class="hero">
     <div>
       <span class="hero-eyebrow">Retail Pharmacy · Clinic · Inventory Management</span>
-      <h1 class="hero-title">Every strip, every sale, every expiry date — tracked without needing the internet.</h1>
+      <h1 class="hero-title">Every shipment, every sale, every expiry date — tracked without needing the internet.</h1>
       <p class="hero-sub">PharmaTrack runs the counter for retail pharmacies and clinics — billing, stock, patient records and expiry alerts, entirely on your own computer. No cloud dependency, no monthly data costs.</p>
       <div class="hero-ctas">
         <a href="#download" class="btn-primary">⬇ Download PharmaTrack</a>
-        <a href="/activate.html" class="btn-outline">Generate Your License →</a>
+        <a href="/activate.html" class="btn-outline">Generate Your License <span class="arrow">→</span></a>
       </div>
       <div class="trust-row">
         <span class="trust-item"><span class="dot"></span>100% Offline</span>
@@ -266,21 +324,52 @@
       </div>
     </div>
 
-    <div class="hero-stack" aria-hidden="true">
-      <div class="shelf-tag tag-1">
-        <div class="tag-label">Stock</div>
-        <div class="tag-value">42 units</div>
-        <div class="tag-sub">Paracetamol 500mg</div>
-      </div>
-      <div class="shelf-tag tag-2">
-        <div class="tag-label">Expiry Alert</div>
-        <div class="tag-value">12 days left</div>
-        <div class="tag-sub">Batch B-2291</div>
-      </div>
-      <div class="shelf-tag tag-3">
-        <div class="tag-label">Today's Sales</div>
-        <div class="tag-value">₹4,280</div>
-        <div class="tag-sub">37 bills</div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="mock-window">
+        <div class="mock-titlebar">
+          <span class="mock-dot" style="background:#E5A15C;"></span>
+          <span class="mock-dot" style="background:#6FBF8B;"></span>
+          <span class="mock-dot" style="background:#DE7C6B;"></span>
+          <span class="mock-window-title mono">PharmaTrack</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-sidebar">
+            <div class="mock-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M3 12h18"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Inventory
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 16V8m0 0 3 3M7 8 4 11"/><path d="M17 8v8m0 0-3-3m3 3 3-3"/></svg>
+              Stock In / Out
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 16.5v.01"/><path d="M10.3 4.3 2.9 17a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.3a1.8 1.8 0 0 0-3.4 0Z"/></svg>
+              Expiry Tracking
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="10" r="1.75"/><path d="M6 17c.5-2 2-3 3.5-3s3 1 3.5 3"/><path d="M14 8h4M14 12h4"/></svg>
+              Patient Records
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>
+              Supplier Accounts
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+              Billing & Sales
+            </div>
+            <div class="mock-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/></svg>
+              Reports
+            </div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-content-bar" style="width:88%"></div>
+            <div class="mock-content-bar" style="width:64%"></div>
+            <div class="mock-content-bar" style="width:74%"></div>
+            <div class="mock-content-bar" style="width:45%"></div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -294,32 +383,32 @@
 
       <div class="features-grid">
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M3 12h18"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="18" height="10" rx="2"/><path d="M3 12h18"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
           <div class="feature-title">Inventory & Stock Tracking</div>
           <div class="feature-desc">Track every item by batch and expiry, with low-stock warnings before you run out at the counter.</div>
         </div>
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
           <div class="feature-title">Billing & Sales</div>
           <div class="feature-desc">Fast, prescription-linked billing at the counter — built for a busy shop, not a back office.</div>
         </div>
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4"/><path d="M12 16.5v.01"/><path d="M10.3 4.3 2.9 17a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.3a1.8 1.8 0 0 0-3.4 0Z"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4"/><path d="M12 16.5v.01"/><path d="M10.3 4.3 2.9 17a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.3a1.8 1.8 0 0 0-3.4 0Z"/></svg></div>
           <div class="feature-title">Expiry & Batch Alerts</div>
           <div class="feature-desc">Get flagged automatically before stock goes past its shelf life, batch by batch.</div>
         </div>
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="10" r="1.75"/><path d="M6 17c.5-2 2-3 3.5-3s3 1 3.5 3"/><path d="M14 8h4M14 12h4"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="10" r="1.75"/><path d="M6 17c.5-2 2-3 3.5-3s3 1 3.5 3"/><path d="M14 8h4M14 12h4"/></svg></div>
           <div class="feature-title">Patient & Customer Records</div>
           <div class="feature-desc">Keep purchase and prescription history on hand for every repeat customer.</div>
         </div>
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/></svg></div>
           <div class="feature-title">Reports & Insights</div>
           <div class="feature-desc">Daily sales, stock valuation, and movement reports whenever you need them.</div>
         </div>
         <div class="feature-card reveal">
-          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l18 18"/><path d="M8.5 8.5a10 10 0 0 1 12 2M5.5 12a10 10 0 0 1 2-3.3M8.8 15.3a5.5 5.5 0 0 1 6.6-1.1M12 19v.01"/></svg>
+          <div class="feature-icon-wrap"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l18 18"/><path d="M8.5 8.5a10 10 0 0 1 12 2M5.5 12a10 10 0 0 1 2-3.3M8.8 15.3a5.5 5.5 0 0 1 6.6-1.1M12 19v.01"/></svg></div>
           <div class="feature-title">Works Fully Offline</div>
           <div class="feature-desc">No internet connection required — your data lives on your own machine, always.</div>
         </div>
@@ -356,7 +445,7 @@
         <div class="section-eyebrow reveal" style="color:rgba(255,255,255,0.85);">Already installed?</div>
         <h2 class="section-title reveal">Generate your license key</h2>
         <p class="section-desc reveal">Open PharmaTrack, click "Get License" inside the app, and you'll land right back here with your device already recognized.</p>
-        <a href="/activate.html" class="btn-primary reveal">Generate Your License →</a>
+        <a href="/activate.html" class="btn-primary reveal">Generate Your License <span class="arrow">→</span></a>
       </div>
     </div>
   </section>
@@ -368,8 +457,8 @@
       <h2 class="section-title reveal">Need a hand getting set up?</h2>
       <p class="section-desc reveal">Installation, licensing, or general questions about using PharmaTrack — reach out any time.</p>
       <div class="support-links reveal">
-        <a href="https://wa.me/919103109249" target="_blank" rel="noopener" class="support-link">💬 WhatsApp — 9103109249</a>
-        <a href="mailto:MuzamilMatta63@gmail.com" class="support-link">✉ MuzamilMatta63@gmail.com</a>
+        <a id="supportWhatsapp" href="#" target="_blank" rel="noopener" class="support-link">💬 WhatsApp</a>
+        <a id="supportEmail" href="#" class="support-link">✉ Email</a>
       </div>
     </div>
   </section>
@@ -377,12 +466,31 @@
   <footer>
     PharmaTrack by ePine Business Solutions &nbsp;·&nbsp;
     <a href="/terms.html">Terms &amp; Conditions</a> &nbsp;·&nbsp;
-    <a href="mailto:MuzamilMatta63@gmail.com">Support</a> &nbsp;·&nbsp;
+    <a id="footerSupportEmail" href="#">Support</a> &nbsp;·&nbsp;
     © 2026 ePine Business Solutions. All rights reserved.
   </footer>
 
 <script>
 (function(){
+  // ==========================================================
+  // SUPPORT CONTACT — edit these two lines only; every mention of
+  // support contact info on this page is filled in from here.
+  // ==========================================================
+  const SUPPORT_EMAIL = 'MuzamilMatta63@gmail.com';
+  const SUPPORT_WHATSAPP = '919103109249'; // country code + number, digits only
+
+  document.getElementById('supportWhatsapp').href = 'https://wa.me/' + SUPPORT_WHATSAPP;
+  document.getElementById('supportWhatsapp').textContent = '💬 WhatsApp — ' + SUPPORT_WHATSAPP.replace(/^91/, '');
+  document.getElementById('supportEmail').href = 'mailto:' + SUPPORT_EMAIL;
+  document.getElementById('supportEmail').textContent = '✉ ' + SUPPORT_EMAIL;
+  document.getElementById('footerSupportEmail').href = 'mailto:' + SUPPORT_EMAIL;
+
+  // ---------- Nav scroll shadow ----------
+  const siteNav = document.querySelector('.site-nav');
+  window.addEventListener('scroll', () => {
+    siteNav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
   // ---------- Scroll-reveal ----------
   const revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window){
