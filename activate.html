@@ -523,8 +523,8 @@
 
   .license-details{
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-    gap: 12px;
+    grid-template-columns: 1fr 1fr 2.5fr 2fr;
+    gap: 10px;
     margin-top: 20px;
   }
   .detail-item{
@@ -574,6 +574,9 @@
 
   [hidden]{ display:none !important; }
 
+  @media (max-width: 768px){
+    .license-details { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 560px){
     .form-grid{ grid-template-columns: 1fr; }
     .code-value{ font-size: 15px; }
@@ -781,11 +784,11 @@
         </div>
         <div class="detail-item">
           <div class="detail-label">Request Code</div>
-          <div class="detail-value mono" id="detailRequestCode" style="font-size:11.5px;">—</div>
+          <div class="detail-value mono" id="detailRequestCode" style="font-size:10.5px; word-break: break-all; line-height:1.4;">—</div>
         </div>
         <div class="detail-item">
           <div class="detail-label">Registered Email</div>
-          <div class="detail-value" id="detailEmail">—</div>
+          <div class="detail-value" id="detailEmail" style="font-size: 13px; word-break: break-all; line-height:1.4;">—</div>
         </div>
       </div>
 
