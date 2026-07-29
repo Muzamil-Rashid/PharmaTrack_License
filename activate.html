@@ -814,6 +814,26 @@
   </div>
 </div>
 
+<!-- ============ ERROR MODAL ============ -->
+<div class="overlay" id="errorModal">
+  <div class="overlay-card" style="padding: 28px 24px; text-align: center; max-width: 400px; width: 90%;">
+    <div style="font-size: 42px; margin-bottom: 12px; line-height: 1;">🛑</div>
+    <h3 style="margin-bottom: 12px; color: var(--danger); font-size: 20px;">Important Notice</h3>
+    <p id="errorModalMsg" style="font-size: 15px; color: var(--ink); margin-bottom: 20px; font-weight: 500; line-height: 1.5;"></p>
+    <p style="font-size: 13.5px; color: var(--ink-muted); margin-bottom: 16px;">For assistance or to resolve this issue, please contact the PharmaTrack Team.</p>
+    
+    <div style="background: var(--paper); padding: 16px; border-radius: 10px; margin-bottom: 24px; border: 1px solid var(--border);">
+      <p style="margin: 0; font-size: 11.5px; color: var(--ink-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Call or WhatsApp</p>
+      <p style="margin: 4px 0 14px 0; font-size: 18px; font-weight: 700; color: var(--ink);">+91 9103109249</p>
+      
+      <p style="margin: 0; font-size: 11.5px; color: var(--ink-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Official Email</p>
+      <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: 600; color: var(--ink);">pharmatrack765@gmail.com</p>
+    </div>
+    
+    <button type="button" class="submit-btn" style="margin-top: 0; background: var(--white); color: var(--ink); border: 1.5px solid var(--border);" onclick="document.getElementById('errorModal').classList.remove('active')">Close</button>
+  </div>
+</div>
+
 <script>
 (function(){
 
@@ -1035,6 +1055,12 @@
     return () => { clearInterval(interval); overlay.classList.remove('active'); };
   }
 
+  // ---------- Error Modal ----------
+  function showApiError(msg) {
+    document.getElementById('errorModalMsg').textContent = msg;
+    document.getElementById('errorModal').classList.add('active');
+  }
+
   // ---------- Payment + license issuance ----------
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -1079,13 +1105,11 @@
       if (result.success){
         showSuccess(plan, customer, result.licenseKey, result.expiresAt);
       } else {
-        formErrorBanner.textContent = result.message || 'Could not activate your trial. This device may have already used one.';
-        formErrorBanner.style.display = 'block';
+        showApiError(result.message || 'Could not activate your trial. This device may have already used one.');
       }
     } catch (err) {
       hideOverlay();
-      formErrorBanner.textContent = 'Could not reach the license server. Please check your connection and try again.';
-      formErrorBanner.style.display = 'block';
+      showApiError('Could not reach the license server. Please check your connection and try again.');
     }
   }
 
@@ -1104,8 +1128,7 @@
       hideOverlay();
 
       if (!orderRes.ok){
-        formErrorBanner.textContent = order.error || 'Could not start payment. Please try again.';
-        formErrorBanner.style.display = 'block';
+        showApiError(order.error || 'Could not start payment. Please try again.');
         return;
       }
 
@@ -1133,8 +1156,7 @@
       rzp.open();
     } catch (err) {
       hideOverlay();
-      formErrorBanner.textContent = 'Could not reach the license server. Please check your connection and try again.';
-      formErrorBanner.style.display = 'block';
+      showApiError('Could not reach the license server. Please check your connection and try again.');
     }
   }
 
@@ -1156,13 +1178,11 @@
       if (result.success){
         showSuccess(plan, customer, result.licenseKey, result.expiresAt);
       } else {
-        formErrorBanner.textContent = 'Your payment went through, but we couldn\'t verify it automatically. Contact support with payment ID: ' + razorpayResponse.razorpay_payment_id;
-        formErrorBanner.style.display = 'block';
+        showApiError('Your payment went through, but we couldn\'t verify it automatically. Contact support with payment ID: ' + razorpayResponse.razorpay_payment_id);
       }
     } catch (err) {
       hideOverlay();
-      formErrorBanner.textContent = 'Your payment went through, but something went wrong on our end. Contact support with payment ID: ' + razorpayResponse.razorpay_payment_id;
-      formErrorBanner.style.display = 'block';
+      showApiError('Your payment went through, but something went wrong on our end. Contact support with payment ID: ' + razorpayResponse.razorpay_payment_id);
     }
   }
 
