@@ -12,19 +12,36 @@ module.exports = async (req, res) => {
 
     const { data: existing } = await supabase
       .from('trial_activations')
-      .select('request_code')
+      .select('request_code, is_blocked')
       .eq('request_code', requestCode)
       .maybeSingle();
 
     if (existing) {
+      if (existing.is_blocked) {
+        return res.status(403).json({ success: false, message: 'You are blocked. Please contact PharmaTrack.' });
+      }
       return res.status(409).json({ success: false, message: 'This device has already used a free trial.' });
+    }
+
+    const { data: existingOrder } = await supabase
+      .from('orders')
+      .select('is_blocked')
+      .eq('request_code', requestCode)
+      .eq('is_blocked', true)
+      .maybeSingle();
+
+    if (existingOrder) {
+      return res.status(403).json({ success: false, message: 'You are blocked. Please contact PharmaTrack.' });
     }
 
     const { licenseKey, expiresAt } = await generateLicenseKey(
       requestCode, TRIAL_DURATION_DAYS, process.env.LICENSE_PRIVATE_KEY_B64
     );
 
-    const { error: trialError } = await supabase.from('trial_activations').insert({ request_code: requestCode });
+    const { error: trialError } = await supabase.from('trial_activations').insert({ 
+      request_code: requestCode,
+      full_name: customer?.fullName || ''
+    });
     if (trialError) throw trialError;
 
     const { error: orderError } = await supabase.from('orders').insert({
@@ -35,6 +52,7 @@ module.exports = async (req, res) => {
       email: customer?.email || '',
       address: customer?.address || '',
       business_name: customer?.businessName || '',
+      agreed_terms: customer?.agreed_terms || '',
       status: 'license_issued',
       license_key: licenseKey,
       expires_at: expiresAt,

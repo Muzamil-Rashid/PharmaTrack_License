@@ -80,7 +80,7 @@
     gap: 10px;
   }
   .brand-logo{
-    width: 40px; height: 40px;
+    width: 52px; height: 52px;
     border-radius: 9px;
     object-fit: cover;
     flex-shrink:0;
@@ -593,7 +593,7 @@
   <!-- ============ HEADER ============ -->
   <header class="site-header">
     <div class="brand">
-      <img src="/assets/logo.png" alt="PharmaTrack" class="brand-logo">
+      <img src="FT_Logo.png" alt="PharmaTrack" class="brand-logo">
       <div>
         <div class="brand-name">PharmaTrack</div>
         <div class="brand-sub">License Activation</div>
@@ -623,7 +623,7 @@
   <div id="noCodeBlock" class="warning-banner" hidden style="font-size:14px; padding:16px 18px;">
     ⚠️ <span>We couldn't detect a request code from PharmaTrack. Please close this page and reopen it using the
     <strong>"Get License"</strong> button inside the software — this page only works when opened that way.
-    Still stuck? Contact <a id="supportEmailLink1" href="#">MuzamilMatta63@gmail.com</a>.</span>
+    Still stuck? Contact <a id="supportEmailLink1" href="#">pharmatrack765@gmail.com</a>.</span>
   </div>
 
   <div id="flowContainer" hidden>
@@ -741,11 +741,11 @@
 
         <label class="terms-row">
           <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
-          <span>I agree to the Terms &amp; Conditions and understand this license will only activate on the device that generated the request code above.</span>
+          <span>I agree to all the 14 <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> of PharmaTrack and understand this license will only activate on the device that generated the request code above.</span>
         </label>
         <div class="field-error" id="err-terms"></div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">Get Your License</button>
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>Get Your License</button>
         <div class="secure-note">🔒 Payments are processed securely by Razorpay. Your card details are never stored on our servers.</div>
       </form>
     </div>
@@ -798,9 +798,10 @@
   </div><!-- /#flowContainer -->
 
   <footer>
-    <a href="/">← Back to PharmaTrack home</a>
-    &nbsp;·&nbsp; Need help? Contact <a id="supportEmailLink2" href="#">MuzamilMatta63@gmail.com</a>
-    &nbsp;·&nbsp; © 2026 ePine Business Solutions. All rights reserved.
+    <a href="index.html">← Back to PharmaTrack home</a>
+    &nbsp;·&nbsp; Need help? Contact <a id="supportEmailLink2" href="#">pharmatrack765@gmail.com</a>
+    &nbsp;·&nbsp; © 2026 ePine Business Solutions. All rights reserved.<br>
+    <span style="font-size: 12.5px; color: var(--ink-muted); margin-top: 8px; display: inline-block;">Designed &amp; Developed by Muzamil Rashid</span>
   </footer>
 
 </div>
@@ -956,6 +957,12 @@
   // ---------- Form validation ----------
   const form = document.getElementById('licenseForm');
   const formErrorBanner = document.getElementById('formErrorBanner');
+  const agreeTermsCheckbox = document.getElementById('agreeTerms');
+  const submitBtnEl = document.getElementById('submitBtn');
+
+  agreeTermsCheckbox.addEventListener('change', () => {
+    submitBtnEl.disabled = !agreeTermsCheckbox.checked;
+  });
 
   function setFieldError(id, message){
     const el = document.getElementById('err-' + id);
@@ -1040,13 +1047,15 @@
     }
 
     const plan = PLANS[selectedPlanId];
+    const nameVal = document.getElementById('fullName').value.trim();
     const customer = {
-      fullName: document.getElementById('fullName').value.trim(),
+      fullName: nameVal,
       mobile: document.getElementById('mobile').value.trim(),
       email: document.getElementById('email').value.trim(),
       address: document.getElementById('address').value.trim(),
       businessName: document.getElementById('businessName').value.trim(),
       requestCode: requestCode,
+      agreed_terms: `I, ${nameVal}, agreed all the 14 terms and conditions of the PharmaTrack with my genuine senses`,
     };
 
     if (plan.id === 'trial'){
@@ -1200,7 +1209,7 @@
   // SUPPORT CONTACT — edit this one line only; both mentions of the
   // support email on this page are filled in from here.
   // ==========================================================
-  const SUPPORT_EMAIL = 'MuzamilMatta63@gmail.com';
+  const SUPPORT_EMAIL = 'pharmatrack765@gmail.com';
   ['supportEmailLink1', 'supportEmailLink2'].forEach(id => {
     const el = document.getElementById(id);
     if (el){ el.href = 'mailto:' + SUPPORT_EMAIL; el.textContent = SUPPORT_EMAIL; }

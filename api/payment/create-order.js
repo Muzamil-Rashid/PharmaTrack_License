@@ -15,6 +15,27 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: `Price for "${plan.name}" hasn't been configured yet.` });
     }
 
+    const { data: existingTrial } = await supabase
+      .from('trial_activations')
+      .select('is_blocked')
+      .eq('request_code', requestCode)
+      .maybeSingle();
+
+    if (existingTrial && existingTrial.is_blocked) {
+      return res.status(403).json({ error: 'You are blocked. Please contact PharmaTrack.' });
+    }
+
+    const { data: existingOrder } = await supabase
+      .from('orders')
+      .select('is_blocked')
+      .eq('request_code', requestCode)
+      .eq('is_blocked', true)
+      .maybeSingle();
+
+    if (existingOrder) {
+      return res.status(403).json({ error: 'You are blocked. Please contact PharmaTrack.' });
+    }
+
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -34,6 +55,7 @@ module.exports = async (req, res) => {
       email: customer?.email || '',
       address: customer?.address || '',
       business_name: customer?.businessName || '',
+      agreed_terms: customer?.agreed_terms || '',
       razorpay_order_id: order.id,
       amount_paise: plan.amount,
       status: 'created',
