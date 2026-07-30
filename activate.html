@@ -502,9 +502,11 @@
     font-weight: 600;
     letter-spacing: 0.02em;
     color: var(--primary-dark);
+    word-wrap: break-word;
     word-break: break-all;
     line-height: 1.6;
     flex: 1 1 240px;
+    min-width: 0;
   }
   .copy-btn{
     font-family:'Manrope', sans-serif;
@@ -522,10 +524,14 @@
   .copy-btn:hover{ background: var(--success-bg); }
 
   .license-details{
-    display:grid;
-    grid-template-columns: 1fr 1fr 2.5fr 2fr;
+    display:flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-top: 20px;
+  }
+  .license-details .detail-item {
+    flex: 1 1 200px;
+    min-width: 0;
   }
   .detail-item{
     background: var(--paper);
@@ -574,10 +580,8 @@
 
   [hidden]{ display:none !important; }
 
-  @media (max-width: 768px){
-    .license-details { grid-template-columns: 1fr 1fr; }
-  }
   @media (max-width: 560px){
+    .license-details .detail-item { flex: 1 1 100%; }
     .form-grid{ grid-template-columns: 1fr; }
     .code-value{ font-size: 15px; }
     .license-key-value{ font-size: 12.5px; }
@@ -792,9 +796,9 @@
         </div>
       </div>
 
-      <div style="background-color: #FEF3C7; border: 1px solid #FDE68A; color: #92400E; padding: 14px 18px; border-radius: 8px; margin-top: 28px; font-size: 13.5px; line-height: 1.5; text-align: left;">
-        <strong>Note:</strong> Your license key has been securely sent to your given email. If you don't see it in your Inbox, <strong>please check your Spam folder</strong>.
-      </div>
+      <p class="success-tip">💡 Tip: Save this License Key somewhere safe before closing this page.</p>
+
+      <button type="button" class="reset-btn" id="resetBtn">Register another device</button>
     </div>
   </section>
 
